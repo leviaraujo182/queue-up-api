@@ -1,0 +1,17 @@
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Application.deps.json
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Application.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Application.pdb
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Domain.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Infraestructure.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Domain.pdb
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/bin/Debug/net9.0/QueueUp.Infraestructure.pdb
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.csproj.AssemblyReference.cache
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.AssemblyInfoInputs.cache
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.AssemblyInfo.cs
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.csproj.CoreCompileInputs.cache
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp..EE15B187.Up2Date
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/refint/QueueUp.Application.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.pdb
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/ref/QueueUp.Application.dll

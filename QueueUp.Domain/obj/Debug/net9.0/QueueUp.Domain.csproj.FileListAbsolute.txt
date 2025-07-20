@@ -1,0 +1,11 @@
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/bin/Debug/net9.0/QueueUp.Domain.deps.json
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/bin/Debug/net9.0/QueueUp.Domain.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/bin/Debug/net9.0/QueueUp.Domain.pdb
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.AssemblyInfoInputs.cache
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.AssemblyInfo.cs
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.csproj.CoreCompileInputs.cache
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/refint/QueueUp.Domain.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.pdb
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/ref/QueueUp.Domain.dll
