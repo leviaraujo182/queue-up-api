@@ -18,7 +18,7 @@ public class JwtServices(IConfiguration configuration) : IJwtServices
         var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            new Claim("userId", user.Id.ToString())
         };
         
         var tokenOptions = new JwtSecurityToken(

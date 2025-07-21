@@ -173,3 +173,4 @@
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.API/obj/Debug/net9.0/QueueUp.API.pdb
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.API/obj/Debug/net9.0/QueueUp.API.genruntimeconfig.cache
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.API/obj/Debug/net9.0/ref/QueueUp.API.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.API/obj/Debug/net9.0/QueueUp.API.sourcelink.json

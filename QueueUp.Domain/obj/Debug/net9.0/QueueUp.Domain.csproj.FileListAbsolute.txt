@@ -9,3 +9,4 @@
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/refint/QueueUp.Domain.dll
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.pdb
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/ref/QueueUp.Domain.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Domain/obj/Debug/net9.0/QueueUp.Domain.sourcelink.json

@@ -25,7 +25,9 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> FindByIdAsync(Guid id)
     {
-        var user = await _appDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        var user = await _appDbContext.Users
+            .Include(x => x.Address)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         return user;
     }

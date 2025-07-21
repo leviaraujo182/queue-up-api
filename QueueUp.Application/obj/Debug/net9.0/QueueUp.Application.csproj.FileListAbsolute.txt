@@ -15,3 +15,4 @@
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/refint/QueueUp.Application.dll
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.pdb
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/ref/QueueUp.Application.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Application/obj/Debug/net9.0/QueueUp.Application.sourcelink.json

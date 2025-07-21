@@ -19,9 +19,29 @@ public class UserController(IUserServices userServices) : ControllerBase
 
             var createdUser = await userServices.CreateAsync(parsedUser);
 
-            var createdUserResponse = createdUser.Adapt<CreatedUserDto>();
+            var createdUserResponse = createdUser.Adapt<UserDto>();
             
             return Ok(createdUserResponse);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        try
+        {
+            var user = await userServices.FindByIdAsync(id);
+
+            if (user == null)
+                return NotFound(new { Message = "Usuário não encontrado" });
+
+            var userResponse = user.Adapt<UserDto>();
+
+            return Ok(userResponse);
         }
         catch(Exception ex)
         {

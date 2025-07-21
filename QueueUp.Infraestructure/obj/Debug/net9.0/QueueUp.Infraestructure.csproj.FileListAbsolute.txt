@@ -13,3 +13,4 @@
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Infraestructure/obj/Debug/net9.0/refint/QueueUp.Infraestructure.dll
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Infraestructure/obj/Debug/net9.0/QueueUp.Infraestructure.pdb
 /Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Infraestructure/obj/Debug/net9.0/ref/QueueUp.Infraestructure.dll
+/Users/leviaraujo/RiderProjects/QueueUp/QueueUp.Infraestructure/obj/Debug/net9.0/QueueUp.Infraestructure.sourcelink.json
