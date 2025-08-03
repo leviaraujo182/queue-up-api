@@ -10,8 +10,13 @@ public class Establishment
     public EEstablishmentType EstablishmentType { get; set; } = EEstablishmentType.Other;
     public string OpenHour { get; set; } = string.Empty;
     public string CloseHour { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
     public Guid UserId { get; set; } = Guid.Empty;
     public User User { get; set; } = null!;
     public Guid AddressId { get; set; } = Guid.Empty;
+    public Guid? QueueId { get; set; } = null;
+    public Queue Queue { get; set; } = null!;
     public EstablishmentAddress EstablishmentAddress { get; set; } = null!;
+    public List<EstablishmentRating> EstablishmentRatings { get; set; } = [];
 }

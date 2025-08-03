@@ -9,7 +9,8 @@ public static class RepositoryServicesExtensions
     public static IServiceCollection AddRepositoryServicesExtensions(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
-
+        services.AddScoped<IEstablishmentRepository, EstablishmentRepository>();
+        services.AddScoped<IQueueRepository, QueueRepository>();
         return services;
     }
 }

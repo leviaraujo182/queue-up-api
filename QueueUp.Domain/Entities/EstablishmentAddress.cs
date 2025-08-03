@@ -8,5 +8,4 @@ public class EstablishmentAddress
     public string Street { get; set; } = string.Empty;
     public string Neighborhood { get; set; } = string.Empty;
     public string ZipCode { get; set; } = string.Empty;
-    public Establishment Establishment { get; set; } = null!;
 }

@@ -12,8 +12,8 @@ using QueueUp.Infraestructure.Context;
 namespace QueueUp.Infraestructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250718020258_Add_ZipCode_In_Addresses")]
-    partial class Add_ZipCode_In_Addresses
+    [Migration("20250803142548_refactor_queues")]
+    partial class refactor_queues
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,10 +30,6 @@ namespace QueueUp.Infraestructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Cep")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -73,6 +69,16 @@ namespace QueueUp.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstablishmentType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -85,6 +91,9 @@ namespace QueueUp.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("QueueId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -92,6 +101,10 @@ namespace QueueUp.Infraestructure.Migrations
 
                     b.HasIndex("AddressId")
                         .IsUnique();
+
+                    b.HasIndex("QueueId")
+                        .IsUnique()
+                        .HasFilter("[QueueId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -103,10 +116,6 @@ namespace QueueUp.Infraestructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Cep")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -133,11 +142,94 @@ namespace QueueUp.Infraestructure.Migrations
                     b.ToTable("EstablishmentAddresses");
                 });
 
+            modelBuilder.Entity("QueueUp.Domain.Entities.EstablishmentRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EstablishmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstablishmentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EstablishmentRatings");
+                });
+
+            modelBuilder.Entity("QueueUp.Domain.Entities.Queue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EstablishmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Slots")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Queues");
+                });
+
+            modelBuilder.Entity("QueueUp.Domain.Entities.QueueUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("QueueId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QueueId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QueueUsers");
+                });
+
             modelBuilder.Entity("QueueUp.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccountType")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("AddressId")
                         .HasColumnType("uniqueidentifier");
@@ -165,10 +257,15 @@ namespace QueueUp.Infraestructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("QueueId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
                         .IsUnique();
+
+                    b.HasIndex("QueueId");
 
                     b.ToTable("Users");
                 });
@@ -176,10 +273,14 @@ namespace QueueUp.Infraestructure.Migrations
             modelBuilder.Entity("QueueUp.Domain.Entities.Establishment", b =>
                 {
                     b.HasOne("QueueUp.Domain.Entities.EstablishmentAddress", "EstablishmentAddress")
-                        .WithOne("Establishment")
+                        .WithOne()
                         .HasForeignKey("QueueUp.Domain.Entities.Establishment", "AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("QueueUp.Domain.Entities.Queue", "Queue")
+                        .WithOne("Establishment")
+                        .HasForeignKey("QueueUp.Domain.Entities.Establishment", "QueueId");
 
                     b.HasOne("QueueUp.Domain.Entities.User", "User")
                         .WithMany("Establishments")
@@ -188,6 +289,46 @@ namespace QueueUp.Infraestructure.Migrations
                         .IsRequired();
 
                     b.Navigation("EstablishmentAddress");
+
+                    b.Navigation("Queue");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QueueUp.Domain.Entities.EstablishmentRating", b =>
+                {
+                    b.HasOne("QueueUp.Domain.Entities.Establishment", "Establishment")
+                        .WithMany("EstablishmentRatings")
+                        .HasForeignKey("EstablishmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QueueUp.Domain.Entities.User", "User")
+                        .WithMany("EstablishmentRatings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Establishment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QueueUp.Domain.Entities.QueueUser", b =>
+                {
+                    b.HasOne("QueueUp.Domain.Entities.Queue", "Queue")
+                        .WithMany("QueueUsers")
+                        .HasForeignKey("QueueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QueueUp.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Queue");
 
                     b.Navigation("User");
                 });
@@ -200,7 +341,13 @@ namespace QueueUp.Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("QueueUp.Domain.Entities.Queue", "Queue")
+                        .WithMany()
+                        .HasForeignKey("QueueId");
+
                     b.Navigation("Address");
+
+                    b.Navigation("Queue");
                 });
 
             modelBuilder.Entity("QueueUp.Domain.Entities.Address", b =>
@@ -209,14 +356,23 @@ namespace QueueUp.Infraestructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QueueUp.Domain.Entities.EstablishmentAddress", b =>
+            modelBuilder.Entity("QueueUp.Domain.Entities.Establishment", b =>
+                {
+                    b.Navigation("EstablishmentRatings");
+                });
+
+            modelBuilder.Entity("QueueUp.Domain.Entities.Queue", b =>
                 {
                     b.Navigation("Establishment")
                         .IsRequired();
+
+                    b.Navigation("QueueUsers");
                 });
 
             modelBuilder.Entity("QueueUp.Domain.Entities.User", b =>
                 {
+                    b.Navigation("EstablishmentRatings");
+
                     b.Navigation("Establishments");
                 });
 #pragma warning restore 612, 618

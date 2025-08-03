@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using QueueUp.Domain.Entities;
 using QueueUp.Domain.Interfaces;
 using QueueUp.Infraestructure.Context;
@@ -8,10 +9,69 @@ public class EstablishmentRepository(AppDbContext appDbContext) : IEstablishment
 {
     public async Task<Establishment> Create(Establishment establishment)
     {
-        var createdEstablishment = await appDbContext.Establishments.AddAsync(establishment);
-        var entity = createdEstablishment.Entity;
+        await appDbContext.EstablishmentAddresses.AddAsync(establishment.EstablishmentAddress);
         await appDbContext.SaveChangesAsync();
 
-        return entity;
+        establishment.AddressId = establishment.EstablishmentAddress.Id;
+        
+        var createdEstablishment = await appDbContext.Establishments.AddAsync(establishment);
+        await appDbContext.SaveChangesAsync();
+
+        return createdEstablishment.Entity;
     }
+
+    public async Task<List<Establishment>?> GetEstablishmentsByOwnerId(Guid ownerId, EstablishmentFilters establishmentFilters)
+    {
+        var list = await appDbContext.Establishments.Where(x => x.UserId == ownerId)
+            .Take(establishmentFilters.PageSize)
+            .Skip(establishmentFilters.PageSize * (establishmentFilters.PageNumber - 1))
+            .Include(x => x.EstablishmentAddress)
+            .ToListAsync();;
+
+        return list;
+    }
+
+    public async Task<Establishment?> GetEstablishmentById(Guid establishmentId)
+    {
+        var establishment = await appDbContext.Establishments
+            .Include(x => x.EstablishmentAddress)
+            .FirstOrDefaultAsync(x => x.Id == establishmentId);
+
+        return establishment;
+    }
+
+    public async Task<EstablishmentRating> CreateRating(Guid userId, Guid establishmentId, int ratingValue)
+    {
+        var establishmentRating = new EstablishmentRating
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            EstablishmentId = establishmentId,
+            Rating = ratingValue,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        var rating = await appDbContext.EstablishmentRatings.AddAsync(establishmentRating);
+        await appDbContext.SaveChangesAsync();
+        
+        return rating.Entity;
+    }
+
+    public async Task<EstablishmentsMetrics> GetEstablishmentsMetrics(Guid ownerId)
+    {
+        var activeEstablishmentsCount = await appDbContext.Establishments
+            .CountAsync(x => x.UserId == ownerId && x.IsActive);
+        var inactiveEstablishmentsCount = await appDbContext.Establishments
+            .CountAsync(x => x.UserId == ownerId && !x.IsActive);
+        var totalEstablishments = await appDbContext.Establishments
+            .CountAsync(x => x.UserId == ownerId);
+
+        return new EstablishmentsMetrics
+        {
+            TotalActiveEstablishments = activeEstablishmentsCount,
+            TotalInactiveEstablishments = inactiveEstablishmentsCount,
+            TotalEstablishments = totalEstablishments
+        };
+    }
+    
 }

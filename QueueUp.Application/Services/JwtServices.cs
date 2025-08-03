@@ -21,10 +21,14 @@ public class JwtServices(IConfiguration configuration) : IJwtServices
             new Claim("userId", user.Id.ToString())
         };
         
+        var expires = DateTime.UtcNow.AddHours(2);
+
+        
         var tokenOptions = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
                 claims: claims,
+                expires: expires,
                 signingCredentials: signingCredentials
             );
 

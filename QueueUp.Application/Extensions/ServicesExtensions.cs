@@ -11,7 +11,8 @@ public static class ServicesExtensions
         services.AddScoped<IUserServices, UserServices>();
         services.AddScoped<IAuthService, AuthServices>();
         services.AddScoped<IJwtServices, JwtServices>();
-        
+        services.AddScoped<IEstablishmentService, EstablishmentService>();
+        services.AddScoped<IQueueService, QueueService>();
         return services;
     }
 }
