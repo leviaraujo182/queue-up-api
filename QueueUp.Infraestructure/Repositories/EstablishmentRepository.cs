@@ -57,6 +57,26 @@ public class EstablishmentRepository(AppDbContext appDbContext) : IEstablishment
         return rating.Entity;
     }
 
+    public async Task<List<EstablishmentRating>> GetEstablishmentRatings(Guid establishmentId)
+    {
+        var establishmentsRatings = await appDbContext.EstablishmentRatings
+            .Where(x => x.EstablishmentId == establishmentId)
+            .ToListAsync();
+
+        return establishmentsRatings;
+    }
+
+    public async Task UpdateRating(Guid establishmentId, double newRating)
+    {
+        var establishment = await appDbContext.Establishments.FirstOrDefaultAsync(x => x.Id == establishmentId);
+
+        if (establishment != null)
+        {
+            establishment.Rating = newRating;
+            await appDbContext.SaveChangesAsync();
+        }
+    }
+
     public async Task<EstablishmentsMetrics> GetEstablishmentsMetrics(Guid ownerId)
     {
         var activeEstablishmentsCount = await appDbContext.Establishments

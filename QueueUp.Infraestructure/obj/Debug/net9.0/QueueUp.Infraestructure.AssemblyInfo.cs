@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QueueUp.Infraestructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0a918b7d2f250585c67dee929e58ba69c2c8e07")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40aa989b70d3cd02bc53b0bf3123d01714dcf3d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("QueueUp.Infraestructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QueueUp.Infraestructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

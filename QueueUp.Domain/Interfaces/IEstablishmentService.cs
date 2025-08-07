@@ -9,4 +9,5 @@ public interface IEstablishmentService
     public Task<EstablishmentsMetrics> GetEstablishmentsMetrics(Guid ownerId);
     public Task<Establishment?> GetEstablishmentById(Guid establishmentId);
     public Task<EstablishmentRating> CreateRating(Guid userId, Guid establishmentId, int ratingValue);
+    public Task UpdateRating(Guid establishmentId);
 }

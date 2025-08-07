@@ -24,9 +24,14 @@ public class EstablishmentService(IEstablishmentRepository establishmentReposito
         return establishmentRepository.GetEstablishmentsMetrics(ownerId);
     }
 
-    public Task<Establishment?> GetEstablishmentById(Guid establishmentId)
+    public async Task<Establishment?> GetEstablishmentById(Guid establishmentId)
     {
-        return establishmentRepository.GetEstablishmentById(establishmentId);
+        var establishment = await establishmentRepository.GetEstablishmentById(establishmentId);
+        
+        if (establishment is null)
+            throw new NotFoundEstablishmentException("Não foi encontrado estabelecimento para o id informado");
+        
+        return establishment;
     }
 
     public async Task<EstablishmentRating> CreateRating(Guid userId, Guid establishmentId, int ratingValue)
@@ -36,6 +41,25 @@ public class EstablishmentService(IEstablishmentRepository establishmentReposito
         if(userQueue is null)
             throw new NotFoundQueueUserException("Usuário não encontrado na fila deste estabelecimento");
         
-        return await establishmentRepository.CreateRating(userId, establishmentId, ratingValue);
+        var rating = await establishmentRepository.CreateRating(userId, establishmentId, ratingValue);
+
+        await UpdateRating(establishmentId);
+
+        return rating;
+    }
+
+    public async Task UpdateRating(Guid establishmentId)
+    {
+        var establishmentRatings = await establishmentRepository.GetEstablishmentRatings(establishmentId);
+
+        var establishmentRatingSum = establishmentRatings.Sum(r => r.Rating);
+        var establishmentRatingCount = establishmentRatings.Count;
+
+        var newRating = Math.Round(establishmentRatingSum / establishmentRatingCount, 2);
+        
+        if(double.IsNaN(newRating))
+            newRating = 0;
+        
+        await establishmentRepository.UpdateRating(establishmentId, newRating);
     }
 }

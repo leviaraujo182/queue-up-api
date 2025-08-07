@@ -9,4 +9,6 @@ public interface IEstablishmentRepository
     public Task<EstablishmentsMetrics> GetEstablishmentsMetrics(Guid ownerId);
     public Task<Establishment?> GetEstablishmentById(Guid establishmentId);
     public Task<EstablishmentRating> CreateRating(Guid userId, Guid establishmentId, int ratingValue);
+    public Task<List<EstablishmentRating>> GetEstablishmentRatings(Guid establishmentId);
+    public Task UpdateRating(Guid establishmentId, double newRating);
 }
