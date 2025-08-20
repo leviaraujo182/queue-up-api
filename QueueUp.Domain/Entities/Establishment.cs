@@ -11,6 +11,7 @@ public class Establishment
     public EEstablishmentType EstablishmentType { get; set; } = EEstablishmentType.Other;
     public string OpenHour { get; set; } = string.Empty;
     public string CloseHour { get; set; } = string.Empty;
+    public int AverageTime { get; set; } = 0;
     public string Description { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
     public Guid UserId { get; set; } = Guid.Empty;

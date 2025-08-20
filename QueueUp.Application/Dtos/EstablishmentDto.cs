@@ -9,10 +9,14 @@ public class EstablishmentDto
     public string Name { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public double Rating { get; set; } = 0;
+    public int AverageTime { get; set; } = 0;
+    public int InQueueUsers { get; set; } = 0;
+    public string Description { get; set; } = string.Empty;
     public EEstablishmentType EstablishmentType { get; set; } = EEstablishmentType.Other;
     public bool IsActive { get; set; } = true;
     public string OpenHour { get; set; } = string.Empty;
     public string CloseHour { get; set; } = string.Empty;
     public Guid UserId { get; set; } = Guid.Empty;
+    public Guid QueueId { get; set; } = Guid.Empty;
     public EstablishmentAddressDto EstablishmentAddress { get; set; } = null!;
 }

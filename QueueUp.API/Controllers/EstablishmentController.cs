@@ -10,7 +10,7 @@ namespace QueueUp.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EstablishmentController(IEstablishmentService establishmentService) : ControllerBase
+public class EstablishmentController(IEstablishmentService establishmentService, IQueueService queueService) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Create(CreateEstablishmentDto createEstablishmentDto)
@@ -97,6 +97,10 @@ public class EstablishmentController(IEstablishmentService establishmentService)
                 return NotFound(new { Message = "Estabelecimento não encontrado" });
             
             var establishmentDto = establishment.Adapt<EstablishmentDto>();
+
+            var inQueueUser = await queueService.CountInQueueUsers(establishment.QueueId.Value, id);
+            
+            establishmentDto.InQueueUsers = inQueueUser;
             
             return Ok(establishmentDto);
         }

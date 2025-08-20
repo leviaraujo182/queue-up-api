@@ -65,7 +65,7 @@ public class EstablishmentRepository(AppDbContext appDbContext) : IEstablishment
 
         return establishmentsRatings;
     }
-
+    
     public async Task UpdateRating(Guid establishmentId, double newRating)
     {
         var establishment = await appDbContext.Establishments.FirstOrDefaultAsync(x => x.Id == establishmentId);
@@ -94,4 +94,14 @@ public class EstablishmentRepository(AppDbContext appDbContext) : IEstablishment
         };
     }
     
+    public async Task UpdateAverageTimeEstablishment(Guid establishmentId, int averageTime)
+    {
+        var establishment = await appDbContext.Establishments.FirstOrDefaultAsync(x => x.Id == establishmentId);
+
+        if (establishment != null)
+        {
+            establishment.AverageTime = averageTime;
+            await appDbContext.SaveChangesAsync();
+        }
+    }
 }

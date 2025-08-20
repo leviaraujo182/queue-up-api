@@ -11,4 +11,5 @@ public interface IEstablishmentRepository
     public Task<EstablishmentRating> CreateRating(Guid userId, Guid establishmentId, int ratingValue);
     public Task<List<EstablishmentRating>> GetEstablishmentRatings(Guid establishmentId);
     public Task UpdateRating(Guid establishmentId, double newRating);
+    public Task UpdateAverageTimeEstablishment(Guid establishmentId, int averageTime);
 }

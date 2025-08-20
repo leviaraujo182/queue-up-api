@@ -20,7 +20,12 @@ public class QueueRepository(AppDbContext appDbContext) : IQueueRepository
         
         var entry = await appDbContext.Queues.AddAsync(queue);
         var queueEntity = entry.Entity;
+        
+        var establishment = await appDbContext.Establishments.FirstOrDefaultAsync(x => x.Id == establishmentId && x.UserId == userId);
 
+        if (establishment != null)
+            establishment.QueueId = queueEntity.Id;
+        
         await appDbContext.SaveChangesAsync();
 
         return queueEntity;
@@ -90,5 +95,57 @@ public class QueueRepository(AppDbContext appDbContext) : IQueueRepository
             .Include(x => x.Queue)
             .Where(x => x.UserId == userId && x.Queue.EstablishmentId == establishmentId)
             .FirstOrDefaultAsync();
+    }
+    
+    public async Task<QueueUser?> GetNextQueueUser(Guid queueId)
+    {
+        var queueUser = await appDbContext.QueueUsers
+            .Where(x => x.QueueId == queueId)
+            .OrderBy(x => x.Position)
+            .FirstOrDefaultAsync();
+
+        return queueUser;
+    }
+
+    public async Task<QueueUser?> UpdateQueueUser(QueueUser queueUser)
+    {
+        appDbContext.QueueUsers.Update(queueUser);
+        await appDbContext.SaveChangesAsync();
+
+        return queueUser;
+    }
+
+    public async Task<List<QueueUser>> GetFinishedQueueUsersByEstablishmentId(Guid establishmentId)
+    {
+       var queueUsers = await appDbContext.QueueUsers
+            .Where(x => x.Queue.EstablishmentId == establishmentId && x.StartDate != null && x.EndDate != null)
+            .ToListAsync();
+
+        return queueUsers;
+    }
+
+    public async Task<int> CountUsersInQueue(Guid queueId)
+    {
+        return await appDbContext.QueueUsers.CountAsync(x => x.QueueId == queueId && x.StartDate == null && x.EndDate == null);
+    }
+
+    public async Task<QueueUser?> GetQueueUserById(Guid userId, Guid queueId)
+    {
+        return await appDbContext.QueueUsers
+            .Where(x => x.UserId == userId && x.QueueId == queueId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<QueueUser?> LeaveQueue(Guid userId, Guid queueId)
+    {
+        var queueUser = await appDbContext.QueueUsers.FirstOrDefaultAsync(x => x.UserId == userId && x.QueueId == queueId);
+
+        if (queueUser == null) return queueUser;
+        
+        queueUser.DeletedAt = DateTime.UtcNow;
+
+        await appDbContext.SaveChangesAsync();
+
+        return queueUser;
     }
 }

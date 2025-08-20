@@ -28,7 +28,9 @@ public class QueueController(IQueueService queueService) : ControllerBase
             if (queue == null)
                 return NotFound(new { Message = "Fila não encontrada ou estabelecimento inválido" });
             
-            return Ok(queue);
+            var parsedQueue = queue.Adapt<QueueDto>();
+            
+            return Ok(parsedQueue);
         }
         catch(Exception ex)
         {
@@ -82,4 +84,75 @@ public class QueueController(IQueueService queueService) : ControllerBase
         }
     }
     
+    [HttpPost("{id}/LeaveQueue")]
+    public async Task<IActionResult> LeaveQueue(Guid id)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+            
+            if(userId is null)
+                return Unauthorized(new { Message = "Usuário não encontrado" });
+            
+            var parsedUserId = Guid.Parse(userId);
+            
+            var queueUser = await queueService.LeaveQueue(parsedUserId, id);
+            
+            if (queueUser == null)
+                return NotFound(new { Message = "Usuário não encontrado na fila" });
+            
+            return Ok(new { Message = "Usuário removido da fila com sucesso" });
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+    
+    [HttpPost("{id}/StartNextQueueUser")]
+    public async Task<IActionResult> StartNextQueueUser(Guid id)
+    {
+        try
+        {
+            var queueUser = await queueService.StartNextQueueUser(id);
+            
+            if (queueUser == null)
+                return NotFound(new { Message = "Fila não encontrada ou não há usuários na fila" });
+            
+            var parsedQueueUser = queueUser.Adapt<QueueUserDto>();
+            
+            return Ok(parsedQueueUser);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
+    
+    [HttpGet("{id}/GetQueueUser")]
+    public async Task<IActionResult> GetQueueUser(Guid id)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+            
+            if(userId is null)
+                return Unauthorized(new { Message = "Usuário não encontrado" });
+            
+            var parsedUserId = Guid.Parse(userId);
+            
+            var queueUser = await queueService.GetQueueUserById(parsedUserId, id);
+
+            if (queueUser == null)
+                return Ok(null);
+            
+            var parsedQueueUser = queueUser.Adapt<QueueUserDto>();
+            
+            return Ok(parsedQueueUser);
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
 }

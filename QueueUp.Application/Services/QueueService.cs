@@ -53,4 +53,55 @@ public class QueueService(IQueueRepository queueRepository, IEstablishmentReposi
 
         return queueUser;
     }
+
+    private async void UpdateAverageTimeEstablishment(Guid establishmentId)
+    {
+        var queueUsers = await queueRepository.GetFinishedQueueUsersByEstablishmentId(establishmentId);
+
+        var totalMinutes = queueUsers.Sum(q => (q.EndDate.Value - q.StartDate.Value).TotalMinutes);
+        
+        double averageMinutes = totalMinutes / queueUsers.Count;
+
+        await establishmentRepository.UpdateAverageTimeEstablishment(establishmentId, (int)averageMinutes);
+    }
+
+    public async Task<QueueUser?> StartNextQueueUser(Guid establishmentId)
+    {
+        var establishment = await establishmentRepository.GetEstablishmentById(establishmentId);
+         
+        if (establishment is null)
+            throw new NotFoundEstablishmentException("Não foi encontrado estabelecimento para o id informado");
+         
+        if(establishment.QueueId is null)
+            throw new NotFoundQueueException("O estabelecimento não possui uma fila ativa");
+         
+        var queue = await queueRepository.GetQueueById(establishment.QueueId.Value);
+        
+        var queueUser = await queueRepository.GetNextQueueUser(queue.Id);
+
+        queueUser.StartDate = DateTime.UtcNow;
+        
+        var updatedQueueUser = await queueRepository.UpdateQueueUser(queueUser);
+
+        UpdateAverageTimeEstablishment(establishmentId);
+        
+        return updatedQueueUser;
+    }
+
+    public async Task<int> CountInQueueUsers(Guid queueId, Guid establishmentId)
+    {
+        return await queueRepository.CountUsersInQueue(queueId);
+    }
+
+    public async Task<QueueUser?> GetQueueUserById(Guid userId, Guid queueId)
+    {
+        return await queueRepository.GetQueueUserById(userId, queueId);
+    }
+
+    public async Task<QueueUser?> LeaveQueue(Guid userId, Guid queueId)
+    {
+        var queueUser = await queueRepository.LeaveQueue(userId, queueId);
+        
+        return queueUser;
+    }
 }
