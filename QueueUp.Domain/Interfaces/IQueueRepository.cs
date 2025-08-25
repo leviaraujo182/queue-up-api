@@ -9,6 +9,7 @@ public interface IQueueRepository
     public Task<Queue?> GetQueueById(Guid queueId);
     public Task<QueueUser> EnterQueue(Guid queueId, Guid userId);
     public Task<int> CountQueueUsers(Guid queueId);
+    public Task<int> CountServicesToday(Guid establishmentId);
     public Task<QueueUser?> GetQueueUser(Guid userId, Guid establishmentId);
     public Task<QueueUser?> GetNextQueueUser(Guid queueId);
     public Task<QueueUser?> UpdateQueueUser(QueueUser queueUser);
@@ -16,4 +17,5 @@ public interface IQueueRepository
     public Task<int> CountUsersInQueue(Guid queueId);
     public Task<QueueUser?> GetQueueUserById(Guid userId, Guid queueId);
     public Task<QueueUser?> LeaveQueue(Guid userId, Guid queueId);
+    public Task<List<QueueUser>> GetQueueUsers(Guid queueId); 
 }

@@ -53,11 +53,11 @@ public class QueueRepository(AppDbContext appDbContext) : IQueueRepository
     public async Task<QueueUser> EnterQueue(Guid queueId, Guid userId)
     {
         var findedQueueUser = await appDbContext.QueueUsers
-            .Where(x => x.QueueId == queueId)
+            .Where(x => x.QueueId == queueId && x.DeletedAt == null)
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefaultAsync();
         
-        var position = 0;
+        var position = 1;
 
         if (findedQueueUser != null)
             position = findedQueueUser.Position + 1;
@@ -83,10 +83,19 @@ public class QueueRepository(AppDbContext appDbContext) : IQueueRepository
     public Task<int> CountQueueUsers(Guid queueId)
     {
         var count = appDbContext.QueueUsers
-            .Where(x => x.QueueId == queueId)
+            .Where(x => x.QueueId == queueId && x.DeletedAt == null)
             .CountAsync();
 
         return count;
+    }
+
+    public Task<int> CountServicesToday(Guid queueId)
+    {
+        return appDbContext.QueueUsers.Where(x => x.QueueId == queueId && 
+                                                  x.StartDate != null && 
+                                                  x.EndDate != null && 
+                                                  x.CreatedAt.Date == DateTime.UtcNow.Date)
+            .CountAsync();
     }
 
     public async Task<QueueUser?> GetQueueUser(Guid userId, Guid establishmentId)
@@ -126,19 +135,22 @@ public class QueueRepository(AppDbContext appDbContext) : IQueueRepository
 
     public async Task<int> CountUsersInQueue(Guid queueId)
     {
-        return await appDbContext.QueueUsers.CountAsync(x => x.QueueId == queueId && x.StartDate == null && x.EndDate == null);
+        return await appDbContext.QueueUsers.CountAsync(x => x.QueueId == queueId && 
+                                                             x.StartDate == null && 
+                                                             x.EndDate == null && 
+                                                             x.DeletedAt == null);
     }
 
     public async Task<QueueUser?> GetQueueUserById(Guid userId, Guid queueId)
     {
         return await appDbContext.QueueUsers
-            .Where(x => x.UserId == userId && x.QueueId == queueId)
+            .Where(x => x.UserId == userId && x.QueueId == queueId && x.DeletedAt == null)
             .FirstOrDefaultAsync();
     }
 
     public async Task<QueueUser?> LeaveQueue(Guid userId, Guid queueId)
     {
-        var queueUser = await appDbContext.QueueUsers.FirstOrDefaultAsync(x => x.UserId == userId && x.QueueId == queueId);
+        var queueUser = await appDbContext.QueueUsers.FirstOrDefaultAsync(x => x.UserId == userId && x.QueueId == queueId && x.DeletedAt == null);
 
         if (queueUser == null) return queueUser;
         
@@ -147,5 +159,14 @@ public class QueueRepository(AppDbContext appDbContext) : IQueueRepository
         await appDbContext.SaveChangesAsync();
 
         return queueUser;
+    }
+
+    public async Task<List<QueueUser>> GetQueueUsers(Guid queueId)
+    {
+        return await appDbContext.QueueUsers
+            .Where(x => x.QueueId == queueId && x.DeletedAt == null)
+            .AsNoTracking()
+            .OrderBy(x => x.CreatedAt)
+            .ToListAsync();
     }
 }

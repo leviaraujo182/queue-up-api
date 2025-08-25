@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QueueUp.Application.Extensions;
+using QueueUp.Application.Hubs;
 using QueueUp.Infraestructure.Context;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,13 +33,16 @@ builder.Services.AddAuthentication(opt =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:3000")
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -50,12 +54,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<QueueHub>("/QueueHub");
 
 app.Run();

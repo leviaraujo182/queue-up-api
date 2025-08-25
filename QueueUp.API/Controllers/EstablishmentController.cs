@@ -97,8 +97,11 @@ public class EstablishmentController(IEstablishmentService establishmentService,
                 return NotFound(new { Message = "Estabelecimento não encontrado" });
             
             var establishmentDto = establishment.Adapt<EstablishmentDto>();
+            
+            if(establishment.QueueId is null)
+                return BadRequest(new { Message = "Estabelecimento não possui uma fila ativa" });
 
-            var inQueueUser = await queueService.CountInQueueUsers(establishment.QueueId.Value, id);
+            var inQueueUser = await queueService.CountInQueueUsers(establishment.QueueId.Value);
             
             establishmentDto.InQueueUsers = inQueueUser;
             
@@ -133,5 +136,35 @@ public class EstablishmentController(IEstablishmentService establishmentService,
             return BadRequest(new { Message = ex.Message });
         }
     }
-    
+
+    [HttpGet("{id}/GetEstablishmentDashboard")]
+    public async Task<IActionResult> GetEstablishmentDashboard(Guid id)
+    {
+        try
+        {
+            var establishment = await establishmentService.GetEstablishmentById(id);
+            
+            if(establishment is null)
+                return NotFound(new { Message = "Estabelecimento não encontrado" });
+            
+            if(establishment.QueueId is null)
+                return BadRequest(new { Message = "Estabelecimento não possui uma fila ativa" });
+            
+            var usersInQueue = await queueService.CountInQueueUsers(establishment.QueueId.Value);
+            
+            var todayServices = await queueService.CountServicesToday(establishment.QueueId.Value);
+
+            return Ok(new
+            {
+                inQueueUsers = usersInQueue,
+                averageTime = establishment.AverageTime,
+                isActive = establishment.IsActive,
+                servicesToday = todayServices
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+    }
 }

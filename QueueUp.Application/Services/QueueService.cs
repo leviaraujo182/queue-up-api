@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.SignalR;
 using QueueUp.Application.Exceptions.Establishment;
 using QueueUp.Application.Exceptions.Queue;
+using QueueUp.Application.Hubs;
 using QueueUp.Domain.Entities;
 using QueueUp.Domain.Interfaces;
 
 namespace QueueUp.Application.Services;
 
-public class QueueService(IQueueRepository queueRepository, IEstablishmentRepository establishmentRepository) : IQueueService
+public class QueueService(IQueueRepository queueRepository, IEstablishmentRepository establishmentRepository, IHubContext<QueueHub> queueHubContext) : IQueueService
 {
     public async Task<Queue?> StartQueue(Guid establishmentId, Guid userId, int slots)
     {
@@ -88,9 +90,14 @@ public class QueueService(IQueueRepository queueRepository, IEstablishmentReposi
         return updatedQueueUser;
     }
 
-    public async Task<int> CountInQueueUsers(Guid queueId, Guid establishmentId)
+    public async Task<int> CountInQueueUsers(Guid queueId)
     {
         return await queueRepository.CountUsersInQueue(queueId);
+    }
+
+    public async Task<int> CountServicesToday(Guid establishmentId)
+    {
+        return await queueRepository.CountServicesToday(establishmentId);
     }
 
     public async Task<QueueUser?> GetQueueUserById(Guid userId, Guid queueId)
@@ -101,7 +108,26 @@ public class QueueService(IQueueRepository queueRepository, IEstablishmentReposi
     public async Task<QueueUser?> LeaveQueue(Guid userId, Guid queueId)
     {
         var queueUser = await queueRepository.LeaveQueue(userId, queueId);
+
+        await UpdateQueuePositions(queueId);
+        
+        await queueHubContext.Clients.Group(queueId.ToString()).SendAsync("UpdateQueuePositions", queueId);
         
         return queueUser;
+    }
+
+    public async Task UpdateQueuePositions(Guid queueId)
+    {
+        var queueUsers = await queueRepository.GetQueueUsers(queueId);
+    
+        for (int i = 0; i < queueUsers.Count; i++)
+        {
+            int newPosition = i + 1;
+            if (queueUsers[i].Position != newPosition)
+            {
+                queueUsers[i].Position = newPosition;
+                await queueRepository.UpdateQueueUser(queueUsers[i]);
+            }
+        }
     }
 }

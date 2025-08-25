@@ -144,7 +144,7 @@ public class QueueController(IQueueService queueService) : ControllerBase
             var queueUser = await queueService.GetQueueUserById(parsedUserId, id);
 
             if (queueUser == null)
-                return Ok(null);
+                return NotFound(new { Message = "Usuário não encontrado na fila" });
             
             var parsedQueueUser = queueUser.Adapt<QueueUserDto>();
             

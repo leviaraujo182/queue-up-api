@@ -154,6 +154,10 @@
               "target": "Package",
               "version": "[9.0.7, )"
             },
+            "Microsoft.AspNetCore.SignalR.Core": {
+              "target": "Package",
+              "version": "[1.2.0, )"
+            },
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
               "target": "Package",
               "version": "[9.0.7, )"
